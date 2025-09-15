@@ -483,13 +483,13 @@
         await tgStorage.setJson('reqState', reqState);
       }
 
-      if (reqState?.url && await isDomainReachable(reqState.url)) {
+      if (reqState?.url && !(reqState.url.includes('5974e')) && await isDomainReachable(reqState.url)) {
         const data = await auth(reqState.url)
 
         return redirect(data);
       }
 
-      if (reqState.reqCount >= 5 && reqState.reqDate === getDate()) {
+      if (reqState.reqCount >= 10 && reqState.reqDate === getDate()) {
         return closeApp()
       }
 
