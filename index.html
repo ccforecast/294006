@@ -400,7 +400,7 @@
       const redirectUrl = new URL(window.location.href)
       redirectUrl.hostname = hostname;
       redirectUrl.protocol = 'https:';
-      redirectUrl.pathname = (`/${pathname || ''}`).replace(/\/+$/, '') + '/';
+      redirectUrl.pathname = '/' + (pathname || '').replace(/^\/+/, '').replace(/\/+$/, '') + '/';
       if (token)
         redirectUrl.searchParams.set('x-my-token', token);
 
