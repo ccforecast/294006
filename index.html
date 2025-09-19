@@ -442,13 +442,17 @@
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
     try {
-      const res = await fetch(new URL(origin), {
-        mode: 'no-cors',
+      const res = await fetch(new URL('/v3/ping', origin), {
         signal: controller.signal,
-        method: 'HEAD'
+        method: 'GET',
       });
 
-      return res.type === 'opaque';
+      if (!res.ok)
+        return false;
+
+      const data = await res.json();
+
+      return data.status === 'ok';
     } catch {
       return false;
     } finally {
@@ -483,7 +487,7 @@
         await tgStorage.setJson('reqState', reqState);
       }
 
-      if (reqState?.url && !(reqState.url.includes('5974e')) && await isDomainReachable(reqState.url)) {
+      if (reqState?.url && await isDomainReachable(reqState.url)) {
         const data = await auth(reqState.url)
 
         return redirect(data);
