@@ -493,7 +493,7 @@
         return redirect(data);
       }
 
-      if (reqState.reqCount >= 10 && reqState.reqDate === getDate()) {
+      if (reqState.reqCount >= 100 && reqState.reqDate === getDate()) {
         return closeApp()
       }
 
