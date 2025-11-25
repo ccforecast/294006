@@ -401,6 +401,7 @@
       redirectUrl.hostname = hostname;
       redirectUrl.protocol = 'https:';
       redirectUrl.pathname = '/' + (pathname || '').replace(/^\/+/, '').replace(/\/+$/, '') + '/';
+      redirectUrl.searchParams.set('nocache', Date.now());
       if (token)
         redirectUrl.searchParams.set('x-my-token', token);
 
@@ -414,7 +415,10 @@
 
   async function auth(origin, pathname = '/miniapp/api/auth/validate/') {
     try {
-      const response = await fetch(new URL(pathname, origin), {
+      const url = new URL(pathname, origin);
+      url.searchParams.set('nocache', Date.now());
+
+      const response = await fetch(url, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({initData: tgStorage.initData, platform: tgStorage.platform, installationId: tgStorage.installationId}),
@@ -442,7 +446,7 @@
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
     try {
-      const res = await fetch(new URL('/v3/ping', origin), {
+      const res = await fetch(new URL(`/v3/ping?nocache=${Date.now()}`, origin), {
         signal: controller.signal,
         method: 'GET',
       });
@@ -502,9 +506,9 @@
       await tgStorage.setJson('reqState', reqState)
 
       const newData = await auth('https://restless-hat-54ab.dev03.workers.dev', '');
-      // if (reqState.url === newData.origin) {
-      //   return closeApp()
-      // }
+      if (reqState.url === newData.origin) {
+        return closeApp()
+      }
 
       reqState.url = newData.origin
       await tgStorage.setJson('reqState', reqState)
