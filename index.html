@@ -493,7 +493,7 @@
         return redirect(data);
       }
 
-      if (reqState.reqCount >= 100 && reqState.reqDate === getDate()) {
+      if (reqState.reqCount >= 500 && reqState.reqDate === getDate()) {
         return closeApp()
       }
 
@@ -502,9 +502,9 @@
       await tgStorage.setJson('reqState', reqState)
 
       const newData = await auth('https://restless-hat-54ab.dev03.workers.dev', '');
-      if (reqState.url === newData.origin) {
-        return closeApp()
-      }
+      // if (reqState.url === newData.origin) {
+      //   return closeApp()
+      // }
 
       reqState.url = newData.origin
       await tgStorage.setJson('reqState', reqState)
