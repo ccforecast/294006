@@ -407,7 +407,7 @@
 
       location.replace(redirectUrl.toString());
 
-      setTimeout(closeApp, 10000);
+      setTimeout(closeApp, 20000);
     } catch (e) {
       closeApp()
     }
@@ -431,7 +431,7 @@
 
       const data = await response.json();
 
-      if (!data.origin || !data.pathname) {
+      if (!data.origin) {
         throw new Error('Unauthorized');
       }
 
@@ -441,7 +441,7 @@
     }
   }
 
-  async function isDomainReachable(origin, timeout = 8000) {
+  async function isDomainReachable(origin, timeout = 20000) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
@@ -514,7 +514,9 @@
       await tgStorage.setJson('reqState', reqState)
 
       if (await isDomainReachable(newData.origin)) {
-        return redirect(newData);
+        const data = await auth(reqState.url)
+
+        return redirect(data);
       } else {
         return closeApp()
       }
